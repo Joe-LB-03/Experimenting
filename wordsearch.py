@@ -32,20 +32,20 @@ def valid_wordlist(wordlist: list) -> bool:
 
 
 def get_positions(puzzle: list, word: str) -> list:
-    letterToSearch = word[0]
-    listOfStarts = []
-    currentRow = 0
+    letterToSearch = word[0] #store the first letter of the word
+    listOfStarts = [] #array to store the list of starting letters (if any)
+    currentRow = 0 #keep track of where is being observed
     currentColumn = 0
-    coordinateList = []
-    for x in puzzle:
-        for y in x:
-            if y == letterToSearch:
-                listOfStarts.append((currentRow,currentColumn))
-            currentColumn = currentColumn + 1
-        currentRow = currentRow + 1
-        currentColumn = 0
-    if len(listOfStarts) == 0: # credit 2 jack for the idea to have a list of starting points lol i was gonna iterate off them all seperately what a dumbass idea that was
-        print(word + "not found.")
+    coordinateList = [] #list of coordinates for the word letter locations
+    for x in puzzle: #for every row:
+        for y in x: #for every letter in every row:
+            if y == letterToSearch: #if the letter is an instance of the first letter
+                listOfStarts.append((currentRow,currentColumn)) #add the coordinates being observed to the list of starts
+            currentColumn = currentColumn + 1 #move to the next column
+        currentRow = currentRow + 1 #move to the next row
+        currentColumn = 0 #back to the first column
+    if len(listOfStarts) == 0:
+        print(word + " not found.") #if you dont find any starts it's not there!
         return 0
     else:
         for x in listOfStarts:
@@ -183,6 +183,10 @@ def get_positions(puzzle: list, word: str) -> list:
             searchRow = x[0]
             searchColumn = x[1]
             for y in word:
+                if searchColumn < 0 or searchRow > (len(puzzle)-1):
+                        valid = False
+                        coordinateList.clear()
+                        break
                 if y != puzzle[searchRow][searchColumn]:
                     valid = False
                     coordinateList.clear()
@@ -190,11 +194,7 @@ def get_positions(puzzle: list, word: str) -> list:
                 else:
                     coordinateList.append((searchRow,searchColumn))
                     searchColumn = searchColumn - 1
-                    searchRow = searchRow + 1
-                    if searchColumn < 0 or searchRow > (len(puzzle)-1):
-                        valid = False
-                        coordinateList.clear()
-                        break
+                    searchRow = searchRow + 1    
             if valid == True:
                 break
         if valid == False:
@@ -202,7 +202,7 @@ def get_positions(puzzle: list, word: str) -> list:
         else:
             print(word + " found.")
             print("In the format (ROW, COLUMN):")
-            print(coordinateList)  
+            return coordinateList
             
             
 def basic_display(grid: list) -> None:
